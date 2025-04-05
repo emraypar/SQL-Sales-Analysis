@@ -210,3 +210,84 @@ ORDER BY customer_category, total_sales DESC;
 * **Segmented marketing:** Since Classic Cars and Vintage Cars are popular across all segments, promotions and bundled offers around these products can have broad appeal. However, targeted campaigns for Planes and Motorcycles might resonate more with medium-frequency buyers who seem to spend the most across all categories.
 * **Retention strategy for repeat business:** High-frequency buyers are more likely to purchase across the entire product line spectrum — making them ideal candidates for loyalty rewards or early-access sales events to maintain engagement.
 * **Upsell opportunities**: Low-frequency buyers are engaging with high-value categories like Classic and Vintage Cars — suggesting an opportunity to upsell or re-engage them with similar products.
+### Query 7: Product Preferences by Deal Size <br/> <br/>
+````sql
+SELECT 
+    deal_size,
+    product_line,
+    COUNT(ordernumber) AS total_orders,
+    ROUND(SUM(sales), 2) AS total_sales,
+    ROUND(AVG(sales), 2) AS avg_order_value
+FROM sales_data
+GROUP BY deal_size, product_line
+ORDER BY 
+    CASE 
+        WHEN deal_size = 'Large' THEN 1
+        WHEN deal_size = 'Medium' THEN 2
+        ELSE 3
+    END,
+    total_sales DESC;
+````
+**Purpose:** The purpose of this query is to analyze how product preferences vary across different deal sizes (small, medium, large). By grouping product lines by deal size and aggregating total orders, total sales, and average order value, this analysis provides insights into customer purchasing behavior by transaction scale. This can inform inventory planning, pricing strategy, and sales targeting. <br/> <br/>
+**Findings:** 
+* **Classic Cars** are the top-selling product line across all three deal-sizes, indicating consistent demand reagrdless of transaction size.
+* **Large deal sizes** have the fewest orders but the highest average order values. This is a pattern expected for high-ticket transactions like Trains and Planes.
+* **Medium deals** contribute the highest total sales across most product lines, suggesting they are an ideal balance between quantity and value, which makes them a key contributor to overall revenue.
+* **Small deal sizes** show significant order volume for Classic and Vintage Cars, indicating high accessibility and potential entry points for newer or cost-conscious customers. <br/> <br/>
+
+**Insights:**
+* **Strategic pricing & bundling:** Medium deal sizes show strong performance across categories, making them ideal for bundled offers or loyalty discounts to further increase order volume.
+* **High-value customer targeting:** Large deal sizes, though rare, have substantial revenue per transaction. These customers may benefit from premium experiences or personalized support to nurture high-value relationships.
+* **Product development:** Classic and Vintage Cars dominate all deal sizes, reaffirming their importance as flagship products. Continued investment in these lines could yield steady returns across the board.
+* **Salesforce alignment:** Segmenting sales approaches based on deal size could improve conversion rates. For example, medium-deal buyers may respond well to volume-based incentives, while small-deal buyers might be swayed by promotions or cross-selling.
+### Query 8: Customer Purchase Behaviour Over Time
+````sql
+WITH CustomerYearlyOrders AS (
+    SELECT 
+        customer_name,
+        year_id,
+        COUNT(ordernumber) AS total_orders,
+        ROUND(SUM(sales), 2) AS total_sales
+    FROM sales_data
+    GROUP BY customer_name, year_id
+),
+RankedGrowth AS (
+    SELECT *,
+        LAG(total_orders) OVER (PARTITION BY customer_name ORDER BY year_id) AS prev_year_orders,
+        ROUND(
+            100.0 * (total_orders - LAG(total_orders) OVER (PARTITION BY customer_name ORDER BY year_id)) /
+            NULLIF(LAG(total_orders) OVER (PARTITION BY customer_name ORDER BY year_id), 0), 2
+        ) AS order_growth_percent
+    FROM CustomerYearlyOrders
+)
+SELECT * 
+FROM RankedGrowth
+ORDER BY customer_name, year_id;
+````
+**Purpose:** The purpose of this query is to analyze customer purchase behavior over time, focusing on their order growth percentage. This helps to identify customers who are increasing their orders year over year and those who are seeing a decline. By understanding this, businesses can tailor strategies for customer retention, marketing, and improving overall sales. <br/> <br/> 
+**Findings:** 
+* **Overall Customer Trends:**
+  * A significant portion of customers show variability in order growth year over year. Some customers experience strong growth in their orders, while others see a decline or stagnation in their purchasing behavior. This provides key insights into how well customers are engaging with the business over time.
+  * A handful of customers, such as **Vitachrome Inc.** and **Volvo Model Replicas, Co.**, show dramatic increases in their purchase orders (1050% and 750% growth, respectively), suggesting they either significantly expanded their business with the company or experienced a favorable product demand. This kind of growth is often driven by changes in business needs or external factors such as effective marketing or market shifts.
+  * **Amica Models & Co.**, while having no prior data for comparison, stands out with its substantial order volume in 2004, pointing to high potential for future business or a one-time large-scale purchase.
+**Insights:**
+* **Customer Retention and Re-Engagement:**
+    * **Declining Customers:** Customers like **Alpha Cognac** and **Anna's Decorations, Ltd**, who show a decrease in orders, may represent an opportunity for retention strategies. A possible approach could include re-engagement campaigns or personalized offers designed to address their specific needs. Investigating if these declines are tied to specific products, market conditions, or the introduction of new competitors could help develop targeted solutions.
+    * **Growth-Oriented Customers:** On the other hand, the **Vitachrome Inc.** and **Volvo Model Replicas, Co.** customers, who have shown massive growth in orders, should be nurtured with upsell opportunities and exclusive offers. This can build on their momentum and increase lifetime value. Their rapid growth suggests an increasing demand, possibly related to a positive shift in their business or changes in their needs.
+* **Strategic Insights for Future Engagement:**
+    * For businesses, understanding which customers are growing and which are contracting allows for tailored business strategies. In cases like **Vitachrome Inc.**, where rapid growth is evident, businesses can introduce high-margin products or VIP customer services to capitalize on their increasing activity.
+    * **Alpha Cognac’s** and **Anna's Decorations, Ltd’s** order declines might indicate that these customers are dissatisfied, or they might be looking for new solutions. Targeting them with customer surveys or offering loyalty rewards can help re-engage these customers, turning their decline into a recovery phase.
+* **Yearly Trends and Variability:**
+  * The dataset highlights the seasonal and yearly variability in customer purchases. Certain customers exhibit large fluctuations in order volume, which could be reflective of cyclical business demands, seasonal promotions, or changes in the product offerings of the business. Identifying these patterns early can help in planning for high-demand seasons and adjusting inventory and marketing efforts accordingly.
+**Additional Analytical Considerations:**
+* **Customer Lifetime Value (CLV):**
+    * Combining this order growth data with customer lifetime value (CLV) metrics would allow for a deeper analysis of the long-term value of customers. By understanding whether customers with higher growth rates also have higher CLV, businesses can prioritize their efforts on high-value customers and explore methods for retaining them.
+  * **Seasonality and External Influences:**
+      * Analyzing the order growth percentage in relation to specific external factors such as product launches, marketing campaigns, or even economic conditions could add depth to this analysis. For example, a customer experiencing significant growth may have been influenced by a successful marketing campaign, which should be replicated or adjusted for future strategies.
+  * **Sales Performance Correlation:**
+      * It would also be insightful to compare order growth with overall sales performance to see if an increase in orders correlates with an increase in total sales. This could indicate that customers are purchasing higher-value products or more frequently, which should inform future business strategies.  <br/> <br/>
+      
+**Reflection:**
+    This query provides a dynamic view of customer purchase behavior over time, highlighting both growth and decline patterns. Understanding how customers’ order behaviors evolve is invaluable for businesses looking to make informed decisions on customer retention, marketing strategies, and resource allocation. By focusing on the customers showing the greatest changes, businesses can take targeted actions to either prevent churn or capitalize on growth. <br/> <br/> 
+
+Through this analysis, businesses gain the ability to predict future customer behavior, improve customer loyalty, and optimize sales efforts across different customer segments. Ultimately, the insights derived from this query empower businesses to maintain a proactive approach to customer engagement and maximize long-term revenue.
