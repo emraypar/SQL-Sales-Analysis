@@ -1,4 +1,25 @@
-# SQL-Sales-Analysis <br/>
+## Vehicle Sales Analysis — SQL Portfolio Project <br/>
+
+### Project Overview <br/>
+As a Data Analyst, my goal in this project was to dive into a multi-year dataset of vehicle sales and uncover key business insights that could support strategic decisions. This analysis replicates a real-world scenario in which an organization needs to better understand sales performance, customer behavior, and product trends in order to boost profitability and optimize resource allocation. <br/> <br/> 
+
+### Project Objectives <br/>
+This project was designed to answer core business questions using advanced SQL techniques. Key objectives included:
+  * Analyze multi-year vehicle sales data to identify performance trends
+  * Perform advanced customer segmentation based on frequency and behavior
+  * Use CTEs and window functions to track purchase patterns and growth over time
+  * Explore sales performance by deal size and product preferences
+  * Uncover data-driven insights to support business decision-making <br/> <br/>
+
+### Tools & Techniques Used <br/>
+  * SQL
+  * Common Table Expressions (CTEs)
+  * Window Functions (ROW_NUMBER, RANK, LAG, etc.)
+  * Subqueries & Nested Logic
+  * Aggregate Functions & Advanced Grouping
+  * Customer Segmentation
+  * Data Cleaning & Text Manipulation
+  * Sales Trend & Performance Analysis <br/> <br/>
 
 ## 3. Query Breakdown <br/> 
 ### Query 1: Yearly Sales Analysis <br/> <br/> 
