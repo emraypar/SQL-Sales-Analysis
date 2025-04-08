@@ -1,4 +1,4 @@
-## Vehicle Sales Analysis — SQL Portfolio Project <br/>
+## Customer Segmentation & Sales Analytics — SQL Portfolio Project <br/>
 
 ### Project Overview <br/>
 As a Data Analyst, my goal in this project was to dive into a multi-year dataset of vehicle sales and uncover key business insights that could support strategic decisions. This analysis replicates a real-world scenario in which an organization needs to better understand sales performance, customer behavior, and product trends in order to boost profitability and optimize resource allocation. <br/> <br/> 
