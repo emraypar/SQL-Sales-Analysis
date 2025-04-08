@@ -13,6 +13,7 @@ This project was designed to answer core business questions using advanced SQL t
 
 ### Tools & Techniques Used <br/>
   * SQL
+  * PostgreSQL
   * Common Table Expressions (CTEs)
   * Window Functions (ROW_NUMBER, RANK, LAG, etc.)
   * Subqueries & Nested Logic
